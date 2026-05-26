@@ -28,15 +28,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.danp.lab5.data.model.Product
 
-/**
- * Tarjeta de producto para usar en el listado (HomeScreen).
- * SRP: Se encarga únicamente de representar visualmente un objeto Product.
- *
- * @param product       Datos del producto a mostrar.
- * @param onProductClick Acción al pulsar la tarjeta.
- * @param rating        Valoración del producto (0.0 - 5.0).
- * @param modifier      Modifier externo.
- */
 @Composable
 fun ProductCard(
     product: Product,

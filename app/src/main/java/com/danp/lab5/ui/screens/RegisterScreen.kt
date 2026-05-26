@@ -13,9 +13,6 @@ import androidx.navigation.NavController
 import com.danp.lab5.data.repository.UserRepository
 import com.danp.lab5.ui.navigation.AppScreens
 
-/**
- * Pantalla de Registro (SRP).
- */
 @Composable
 fun RegisterScreen(navController: NavController) {
     var name by remember { mutableStateOf("") }

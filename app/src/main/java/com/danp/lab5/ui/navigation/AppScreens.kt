@@ -1,9 +1,5 @@
 package com.danp.lab5.ui.navigation
 
-/**
- * Objeto que centraliza todas las rutas de navegación de la app.
- * Evita el uso de strings hardcodeados en las screens (SRP).
- */
 object AppScreens {
     const val LOGIN      = "login"
     const val REGISTER   = "register"

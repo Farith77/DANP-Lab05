@@ -27,10 +27,6 @@ import com.danp.lab5.ui.componets.cards.AppBottomCard
 import com.danp.lab5.ui.componets.cards.CartItemCard
 import com.danp.lab5.ui.componets.bars.AppTopBar
 
-/**
- * Pantalla del carrito de compras (SRP).
- * Se encarga de mostrar la lista de ítems agregados y el total.
- */
 @Composable
 fun CartScreen(
     navController: NavController,

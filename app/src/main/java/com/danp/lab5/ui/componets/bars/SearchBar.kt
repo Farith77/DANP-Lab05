@@ -16,15 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-/**
- * Barra de búsqueda reutilizable.
- *
- * @param query         Texto actual del campo de búsqueda.
- * @param onQueryChange Callback que se dispara cuando el usuario escribe.
- * @param onClearQuery  Callback al pulsar el botón de limpiar (X).
- * @param placeholder   Texto de sugerencia cuando el campo está vacío.
- * @param modifier      Modifier externo para controlar tamaño/posición desde el padre.
- */
 @Composable
 fun SearchBar(
     query: String,

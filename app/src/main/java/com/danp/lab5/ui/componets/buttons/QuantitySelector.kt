@@ -18,16 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
-/**
- * Selector de cantidad con botones + y -.
- *
- * @param quantity      Cantidad actual (viene del estado del padre).
- * @param onIncrease    Callback al pulsar "+".
- * @param onDecrease    Callback al pulsar "-". El padre decide si permite llegar a 0.
- * @param minQuantity   Límite inferior (por defecto 1, para no bajar de 1 unidad).
- * @param maxQuantity   Límite superior (por defecto 99).
- * @param modifier      Modifier externo.
- */
 @Composable
 fun QuantitySelector(
     quantity: Int,

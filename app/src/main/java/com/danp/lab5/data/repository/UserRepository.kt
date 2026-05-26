@@ -2,10 +2,6 @@ package com.danp.lab5.data.repository
 
 import com.danp.lab5.data.model.User
 
-/**
- * Repositorio para la gestión de usuarios (DIP/SRP).
- * Simula autenticación y obtención de perfil.
- */
 object UserRepository {
     private var currentUser: User? = null
 

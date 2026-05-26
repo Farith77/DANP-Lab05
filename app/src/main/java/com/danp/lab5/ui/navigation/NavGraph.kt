@@ -12,10 +12,6 @@ import com.danp.lab5.data.model.CartItem
 import com.danp.lab5.data.model.Product
 import com.danp.lab5.ui.screens.*
 
-/**
- * Grafo de navegación principal de la aplicación (SRP).
- * Se han añadido las nuevas rutas solicitadas siguiendo principios SOLID.
- */
 @Composable
 fun NavGraph(startDestination: String = AppScreens.LOGIN) {
 

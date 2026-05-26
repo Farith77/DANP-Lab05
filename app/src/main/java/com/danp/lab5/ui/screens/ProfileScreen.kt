@@ -20,10 +20,6 @@ import com.danp.lab5.data.repository.UserRepository
 import com.danp.lab5.ui.navigation.AppScreens
 import com.danp.lab5.ui.componets.bars.AppTopBar
 
-/**
- * Pantalla de Perfil de Usuario (SRP).
- * Consume datos del UserRepository.
- */
 @Composable
 fun ProfileScreen(navController: NavController) {
     val user = UserRepository.getCurrentUser()

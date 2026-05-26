@@ -30,15 +30,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.danp.lab5.data.model.CartItem
 
-/**
- * Tarjeta de ítem dentro del carrito (CartScreen).
- *
- * @param cartItem          Ítem del carrito con producto y cantidad.
- * @param onQuantityIncrease Callback al pulsar "+" en el QuantitySelector.
- * @param onQuantityDecrease Callback al pulsar "−" en el QuantitySelector.
- * @param onRemoveItem      Callback al pulsar el ícono de eliminar.
- * @param modifier          Modifier externo.
- */
 @Composable
 fun CartItemCard(
     cartItem: CartItem,

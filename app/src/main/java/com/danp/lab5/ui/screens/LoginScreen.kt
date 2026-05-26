@@ -13,10 +13,6 @@ import androidx.navigation.NavController
 import com.danp.lab5.data.repository.UserRepository
 import com.danp.lab5.ui.navigation.AppScreens
 
-/**
- * Pantalla de Inicio de Sesión (SRP: Solo maneja la UI de login).
- * Consume datos a través de UserRepository (ISP/DIP).
- */
 @Composable
 fun LoginScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }

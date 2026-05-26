@@ -16,14 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
-/**
- * Botón para agregar un producto al carrito.
- *
- * @param onAddToCart   Acción al pulsar el botón.
- * @param isInCart      Si el producto ya está en el carrito cambia a modo "outline".
- * @param enabled       Desactiva el botón si el producto no tiene stock.
- * @param modifier      Modifier externo.
- */
 @Composable
 fun AddToCartButton(
     onAddToCart: () -> Unit,

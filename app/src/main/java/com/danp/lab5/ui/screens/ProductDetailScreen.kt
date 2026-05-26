@@ -35,14 +35,6 @@ import com.danp.lab5.ui.componets.bars.AppTopBar
 import com.danp.lab5.ui.componets.buttons.*
 import com.danp.lab5.ui.componets.cards.AppBottomCard
 
-/**
- * Pantalla de detalle de un producto.
- *
- * @param productId      ID del producto a mostrar (viene del NavGraph).
- * @param navController  Controlador de navegación.
- * @param cartItems      Lista observable del carrito compartida entre screens.
- * @param onAddToCart    Callback para agregar el producto con su cantidad.
- */
 @Composable
 fun ProductDetailScreen(
     productId: Int,

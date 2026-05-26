@@ -38,10 +38,6 @@ import com.danp.lab5.data.model.CartItem
 import com.danp.lab5.ui.navigation.AppScreens
 import com.danp.lab5.ui.componets.bars.AppTopBar
 
-/**
- * Pantalla de resumen y confirmación del pedido (SRP).
- * Se ha refactorizado para usar el modelo de datos correcto y seguir los principios SOLID.
- */
 @Composable
 fun CheckoutScreen(
     navController: NavController,

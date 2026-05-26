@@ -25,13 +25,6 @@ import com.danp.lab5.ui.navigation.AppScreens
 import com.danp.lab5.ui.componets.bars.AppTopBar
 import com.danp.lab5.ui.componets.cards.*
 
-/**
- * Pantalla principal que muestra el listado de productos.
- *
- * @param navController  Controlador de navegación.
- * @param cartItems      Lista observable del carrito compartida entre screens.
- * @param onAddToCart    Callback para agregar un producto al carrito.
- */
 @Composable
 fun HomeScreen(
     navController: NavController,

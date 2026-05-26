@@ -21,17 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
-/**
- * Card flotante inferior que muestra el resumen del pedido y el botón de acción principal.
- * Se usa en CartScreen y ProductDetailScreen.
- *
- * @param itemCount         Número de productos distintos en el carrito.
- * @param totalPrice        Precio total a pagar.
- * @param actionLabel       Texto del botón de acción (ej. "Ir al carrito", "Finalizar compra").
- * @param onActionClick     Callback al pulsar el botón de acción.
- * @param enabled           Desactiva el botón si el carrito está vacío.
- * @param modifier          Modifier externo.
- */
 @Composable
 fun AppBottomCard(
     itemCount: Int,

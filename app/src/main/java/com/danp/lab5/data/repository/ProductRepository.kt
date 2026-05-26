@@ -2,10 +2,6 @@ package com.danp.lab5.data.repository
 
 import com.danp.lab5.data.model.Product
 
-/**
- * Repositorio para la obtención de productos (DIP/SRP).
- * Simula el consumo de un servicio externo.
- */
 object ProductRepository {
     private val products = listOf(
         Product(

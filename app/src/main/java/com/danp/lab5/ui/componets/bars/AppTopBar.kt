@@ -18,15 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
-/**
- * Barra superior de la aplicación.
- *
- * @param title         Título que se muestra en la barra.
- * @param showBackButton Muestra el botón de retroceso si es true.
- * @param cartItemCount  Cantidad de ítems en el carrito (muestra badge si > 0).
- * @param onBackClick    Acción al pulsar el botón de retroceso.
- * @param onCartClick    Acción al pulsar el ícono del carrito.
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBar(
