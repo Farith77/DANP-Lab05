@@ -28,7 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.danp.lab5.data.CartItem
+import com.danp.lab5.data.model.CartItem
 
 /**
  * Tarjeta de ítem dentro del carrito (CartScreen).

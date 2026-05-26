@@ -26,14 +26,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.danp.lab5.data.Product
+import com.danp.lab5.data.model.Product
 
 /**
  * Tarjeta de producto para usar en el listado (HomeScreen).
+ * SRP: Se encarga únicamente de representar visualmente un objeto Product.
  *
  * @param product       Datos del producto a mostrar.
- * @param onProductClick Acción al pulsar la tarjeta → navega a ProductDetailScreen.
- * @param rating        Valoración del producto (0.0 - 5.0). Opcional: se oculta si es null.
+ * @param onProductClick Acción al pulsar la tarjeta.
+ * @param rating        Valoración del producto (0.0 - 5.0).
  * @param modifier      Modifier externo.
  */
 @Composable
@@ -54,7 +55,6 @@ fun ProductCard(
         )
     ) {
         Column {
-            // Imagen del producto
             AsyncImage(
                 model = product.imageUrl,
                 contentDescription = product.name,
@@ -66,7 +66,6 @@ fun ProductCard(
             )
 
             Column(modifier = Modifier.padding(12.dp)) {
-                // Nombre del producto
                 Text(
                     text = product.name,
                     style = MaterialTheme.typography.titleSmall,
@@ -78,7 +77,6 @@ fun ProductCard(
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Rating (solo se muestra si se pasa el parámetro)
                 if (rating != null) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -100,7 +98,6 @@ fun ProductCard(
 
                 Spacer(modifier = Modifier.height(6.dp))
 
-                // Precio
                 Text(
                     text = "S/ %.2f".format(product.price),
                     style = MaterialTheme.typography.titleMedium,
