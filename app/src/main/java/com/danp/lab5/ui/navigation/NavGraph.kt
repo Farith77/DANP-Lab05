@@ -8,28 +8,23 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.danp.lab5.data.CartItem
-import com.danp.lab5.data.Product
-import com.danp.lab5.ui.screens.CartScreen
-import com.danp.lab5.ui.screens.CheckoutScreen
-import com.danp.lab5.ui.screens.HomeScreen
-import com.danp.lab5.ui.screens.ProductDetailScreen
+import com.danp.lab5.data.model.CartItem
+import com.danp.lab5.data.model.Product
+import com.danp.lab5.ui.screens.*
 
 /**
- * Grafo de navegación principal de la aplicación.
- *
- * El estado del carrito (cartItems) vive aquí para que sea compartido
- * entre todas las screens sin necesidad de ViewModel.
+ * Grafo de navegación principal de la aplicación (SRP).
+ * Se han añadido las nuevas rutas solicitadas siguiendo principios SOLID.
  */
 @Composable
-fun NavGraph(startDestination: String = AppScreens.HOME) {
+fun NavGraph(startDestination: String = AppScreens.LOGIN) {
 
     val navController = rememberNavController()
 
-    // ── Estado global del carrito ────────────────────────────────────────
+    // ── Estado global del carrito (Mantenido aquí para simplicidad del laboratorio) ──
     val cartItems = remember { mutableStateListOf<CartItem>() }
 
-    // ── Helpers para modificar el carrito ────────────────────────────────
+    // ── Lógica del carrito ──
     fun addToCart(product: Product, quantity: Int = 1) {
         val index = cartItems.indexOfFirst { it.product.id == product.id }
         if (index != -1) {
@@ -63,15 +58,20 @@ fun NavGraph(startDestination: String = AppScreens.HOME) {
         cartItems.removeAll { it.product.id == item.product.id }
     }
 
-    fun clearCart() {
-        cartItems.clear()
-    }
-
-    // ── NavHost ──────────────────────────────────────────────────────────
+    // ── NavHost ──
     NavHost(
         navController = navController,
         startDestination = startDestination
     ) {
+        // Login
+        composable(route = AppScreens.LOGIN) {
+            LoginScreen(navController = navController)
+        }
+
+        // Registro
+        composable(route = AppScreens.REGISTER) {
+            RegisterScreen(navController = navController)
+        }
 
         // Home
         composable(route = AppScreens.HOME) {
@@ -114,8 +114,13 @@ fun NavGraph(startDestination: String = AppScreens.HOME) {
             CheckoutScreen(
                 navController = navController,
                 cartItems = cartItems,
-                onConfirmOrder = { clearCart() }
+                onConfirmOrder = { cartItems.clear() }
             )
+        }
+
+        // Perfil
+        composable(route = AppScreens.PROFILE) {
+            ProfileScreen(navController = navController)
         }
     }
 }
