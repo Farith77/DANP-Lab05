@@ -22,8 +22,8 @@ import com.danp.lab5.data.model.Product
 import com.danp.lab5.data.repository.ProductRepository
 import com.danp.lab5.ui.components.bars.SearchBar
 import com.danp.lab5.ui.navigation.AppScreens
-import com.danp.lab5.ui.componets.bars.AppTopBar
-import com.danp.lab5.ui.componets.cards.*
+import com.danp.lab5.ui.components.bars.AppTopBar
+import com.danp.lab5.ui.components.cards.*
 
 @Composable
 fun HomeScreen(
@@ -50,7 +50,8 @@ fun HomeScreen(
                 title = "Tienda",
                 showBackButton = false,
                 cartItemCount = cartItems.size,
-                onCartClick = { navController.navigate(AppScreens.CART) }
+                onCartClick = { navController.navigate(AppScreens.CART) },
+                onProfileClick = { navController.navigate(AppScreens.PROFILE) }
             )
         },
         bottomBar = {

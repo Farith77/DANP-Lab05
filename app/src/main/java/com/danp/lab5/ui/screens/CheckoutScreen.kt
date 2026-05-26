@@ -19,6 +19,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -36,7 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.danp.lab5.data.model.CartItem
 import com.danp.lab5.ui.navigation.AppScreens
-import com.danp.lab5.ui.componets.bars.AppTopBar
+import com.danp.lab5.ui.components.bars.AppTopBar
+import androidx.compose.material3.DividerDefaults
 
 @Composable
 fun CheckoutScreen(
@@ -153,7 +155,11 @@ fun CheckoutScreen(
                             Spacer(modifier = Modifier.height(6.dp))
                         }
 
-                        Divider(modifier = Modifier.padding(vertical = 8.dp))
+                        HorizontalDivider(
+                            modifier = Modifier.padding(vertical = 8.dp),
+                            thickness = DividerDefaults.Thickness,
+                            color = DividerDefaults.color
+                        )
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -174,7 +180,6 @@ fun CheckoutScreen(
                         }
 
                         Spacer(modifier = Modifier.height(8.dp))
-                        Divider()
                         Spacer(modifier = Modifier.height(8.dp))
 
                         Row(

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -31,9 +32,11 @@ import com.danp.lab5.data.model.CartItem
 import com.danp.lab5.data.model.Product
 import com.danp.lab5.data.repository.ProductRepository
 import com.danp.lab5.ui.navigation.AppScreens
-import com.danp.lab5.ui.componets.bars.AppTopBar
-import com.danp.lab5.ui.componets.buttons.*
-import com.danp.lab5.ui.componets.cards.AppBottomCard
+import com.danp.lab5.ui.components.bars.AppTopBar
+import com.danp.lab5.ui.components.buttons.*
+import com.danp.lab5.ui.components.cards.AppBottomCard
+import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.HorizontalDivider
 
 @Composable
 fun ProductDetailScreen(
@@ -128,7 +131,11 @@ fun ProductDetailScreen(
                     color = MaterialTheme.colorScheme.primary
                 )
 
-                Divider(color = MaterialTheme.colorScheme.outlineVariant)
+                HorizontalDivider(
+                    Modifier,
+                    DividerDefaults.Thickness,
+                    color = MaterialTheme.colorScheme.outlineVariant
+                )
 
                 // Descripción
                 Text(
@@ -144,7 +151,11 @@ fun ProductDetailScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
-                Divider(color = MaterialTheme.colorScheme.outlineVariant)
+                HorizontalDivider(
+                    Modifier,
+                    DividerDefaults.Thickness,
+                    color = MaterialTheme.colorScheme.outlineVariant
+                )
 
                 // Selector de cantidad
                 Row(

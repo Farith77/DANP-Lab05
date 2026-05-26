@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
@@ -18,7 +19,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.danp.lab5.data.repository.UserRepository
 import com.danp.lab5.ui.navigation.AppScreens
-import com.danp.lab5.ui.componets.bars.AppTopBar
+import com.danp.lab5.ui.components.bars.AppTopBar
 
 @Composable
 fun ProfileScreen(navController: NavController) {
@@ -87,7 +88,7 @@ fun ProfileScreen(navController: NavController) {
                     ),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Icon(Icons.Default.ExitToApp, contentDescription = null)
+                    Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Cerrar Sesión")
                 }
@@ -110,7 +111,6 @@ fun ProfileOptionItem(label: String) {
         color = MaterialTheme.colorScheme.surfaceVariant,
         shape = RoundedCornerShape(12.dp)
     ) {
-        PaddingValues(16.dp)
         Text(
             text = label,
             modifier = Modifier.padding(16.dp),

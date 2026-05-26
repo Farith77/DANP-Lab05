@@ -23,9 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.danp.lab5.data.model.CartItem
 import com.danp.lab5.ui.navigation.AppScreens
-import com.danp.lab5.ui.componets.cards.AppBottomCard
-import com.danp.lab5.ui.componets.cards.CartItemCard
-import com.danp.lab5.ui.componets.bars.AppTopBar
+import com.danp.lab5.ui.components.cards.AppBottomCard
+import com.danp.lab5.ui.components.cards.CartItemCard
+import com.danp.lab5.ui.components.bars.AppTopBar
 
 @Composable
 fun CartScreen(
