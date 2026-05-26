@@ -17,9 +17,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.danp.lab5.data.CartItem
-import com.danp.lab5.data.Product
-import com.danp.lab5.data.SampleData
+import com.danp.lab5.data.model.CartItem
+import com.danp.lab5.data.model.Product
+import com.danp.lab5.data.repository.ProductRepository
 import com.danp.lab5.ui.components.bars.SearchBar
 import com.danp.lab5.ui.navigation.AppScreens
 import com.danp.lab5.ui.componets.bars.AppTopBar
@@ -41,8 +41,9 @@ fun HomeScreen(
     var searchQuery by remember { mutableStateOf("") }
 
     val filteredProducts = remember(searchQuery) {
-        if (searchQuery.isBlank()) SampleData.products
-        else SampleData.products.filter {
+        val allProducts = ProductRepository.getProducts()
+        if (searchQuery.isBlank()) allProducts
+        else allProducts.filter {
             it.name.contains(searchQuery, ignoreCase = true) ||
                     it.category.contains(searchQuery, ignoreCase = true)
         }

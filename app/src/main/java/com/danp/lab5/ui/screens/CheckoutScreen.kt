@@ -34,16 +34,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.danp.lab5.data.CartItem
+import com.danp.lab5.data.model.CartItem
 import com.danp.lab5.ui.navigation.AppScreens
 import com.danp.lab5.ui.componets.bars.AppTopBar
 
 /**
- * Pantalla de resumen y confirmación del pedido (vista adicional del flujo).
- *
- * @param navController  Controlador de navegación.
- * @param cartItems      Lista observable del carrito.
- * @param onConfirmOrder Callback que limpia el carrito al confirmar.
+ * Pantalla de resumen y confirmación del pedido (SRP).
+ * Se ha refactorizado para usar el modelo de datos correcto y seguir los principios SOLID.
  */
 @Composable
 fun CheckoutScreen(
@@ -68,7 +65,6 @@ fun CheckoutScreen(
     ) { paddingValues ->
 
         if (orderConfirmed) {
-            // ── Estado de éxito ──────────────────────────────────────────
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -118,7 +114,6 @@ fun CheckoutScreen(
             }
 
         } else {
-            // ── Resumen del pedido ───────────────────────────────────────
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -127,7 +122,6 @@ fun CheckoutScreen(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Resumen de productos
                 Card(
                     shape = RoundedCornerShape(14.dp),
                     elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
@@ -163,10 +157,8 @@ fun CheckoutScreen(
                             Spacer(modifier = Modifier.height(6.dp))
                         }
 
-                        Divider(color = MaterialTheme.colorScheme.outlineVariant)
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Divider(modifier = Modifier.padding(vertical = 8.dp))
 
-                        // Envío
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
@@ -186,10 +178,9 @@ fun CheckoutScreen(
                         }
 
                         Spacer(modifier = Modifier.height(8.dp))
-                        Divider(color = MaterialTheme.colorScheme.outlineVariant)
+                        Divider()
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        // Total final
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
@@ -209,7 +200,6 @@ fun CheckoutScreen(
                     }
                 }
 
-                // Nota de envío gratis
                 if (deliveryCost == 0.0) {
                     Text(
                         text = "🎉 ¡Envío gratis aplicado por compra mayor a S/ 500!",
@@ -221,7 +211,6 @@ fun CheckoutScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Botón confirmar
                 Button(
                     onClick = {
                         onConfirmOrder()
@@ -230,11 +219,7 @@ fun CheckoutScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    )
+                    shape = RoundedCornerShape(14.dp)
                 ) {
                     Text(
                         text = "Confirmar pedido",
@@ -243,7 +228,6 @@ fun CheckoutScreen(
                     )
                 }
 
-                // Botón volver al carrito
                 OutlinedButton(
                     onClick = { navController.popBackStack() },
                     modifier = Modifier

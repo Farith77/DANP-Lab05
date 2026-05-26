@@ -21,20 +21,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.danp.lab5.data.CartItem
+import com.danp.lab5.data.model.CartItem
 import com.danp.lab5.ui.navigation.AppScreens
 import com.danp.lab5.ui.componets.cards.AppBottomCard
 import com.danp.lab5.ui.componets.cards.CartItemCard
 import com.danp.lab5.ui.componets.bars.AppTopBar
 
 /**
- * Pantalla del carrito de compras.
- *
- * @param navController     Controlador de navegación.
- * @param cartItems         Lista observable del carrito compartida entre screens.
- * @param onQuantityIncrease Callback para aumentar cantidad de un ítem.
- * @param onQuantityDecrease Callback para disminuir cantidad de un ítem.
- * @param onRemoveItem      Callback para eliminar un ítem del carrito.
+ * Pantalla del carrito de compras (SRP).
+ * Se encarga de mostrar la lista de ítems agregados y el total.
  */
 @Composable
 fun CartScreen(
@@ -67,7 +62,6 @@ fun CartScreen(
     ) { paddingValues ->
 
         if (cartItems.isEmpty()) {
-            // Estado vacío
             Column(
                 modifier = Modifier
                     .fillMaxSize()

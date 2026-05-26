@@ -27,9 +27,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.danp.lab5.data.CartItem
-import com.danp.lab5.data.Product
-import com.danp.lab5.data.SampleData
+import com.danp.lab5.data.model.CartItem
+import com.danp.lab5.data.model.Product
+import com.danp.lab5.data.repository.ProductRepository
 import com.danp.lab5.ui.navigation.AppScreens
 import com.danp.lab5.ui.componets.bars.AppTopBar
 import com.danp.lab5.ui.componets.buttons.*
@@ -51,7 +51,7 @@ fun ProductDetailScreen(
     onAddToCart: (Product, Int) -> Unit
 ) {
     val product = remember(productId) {
-        SampleData.products.find { it.id == productId }
+        ProductRepository.getProductById(productId)
     }
 
     if (product == null) {
