@@ -1,4 +1,4 @@
-package com.danp.lab5.ui.screens
+package com.danp.lab5.ui.screens.product_detail
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,17 +10,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -30,36 +27,38 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.danp.lab5.data.model.CartItem
 import com.danp.lab5.data.model.Product
-import com.danp.lab5.data.repository.ProductRepository
 import com.danp.lab5.ui.navigation.AppScreens
 import com.danp.lab5.ui.components.bars.AppTopBar
 import com.danp.lab5.ui.components.buttons.*
 import com.danp.lab5.ui.components.cards.AppBottomCard
 import androidx.compose.material3.DividerDefaults
-import androidx.compose.material3.HorizontalDivider
 
 @Composable
 fun ProductDetailScreen(
     productId: Int,
     navController: NavController,
-    cartItems: MutableList<CartItem>,
+    viewModel: ProductDetailViewModel,
+    cartItems: List<CartItem>,
     onAddToCart: (Product, Int) -> Unit
 ) {
-    val product = remember(productId) {
-        ProductRepository.getProductById(productId)
+    val uiState by viewModel.uiState.collectAsState()
+    val isInCart = cartItems.any { it.product.id == productId }
+
+    LaunchedEffect(productId, isInCart) {
+        viewModel.loadProduct(productId, isInCart)
     }
 
+    val product = uiState.product
+
     if (product == null) {
-        navController.popBackStack()
+        if (!uiState.isLoading) {
+            // Podríamos mostrar un error o volver atrás
+            navController.popBackStack()
+        }
         return
     }
 
-    var quantity by remember { mutableIntStateOf(1) }
-    var isInCart by remember {
-        mutableStateOf(cartItems.any { it.product.id == product.id })
-    }
-
-    val subtotal = product.price * quantity
+    val subtotal = product.price * uiState.quantity
 
     Scaffold(
         topBar = {
@@ -73,15 +72,15 @@ fun ProductDetailScreen(
         },
         bottomBar = {
             AppBottomCard(
-                itemCount = quantity,
+                itemCount = uiState.quantity,
                 totalPrice = subtotal,
-                actionLabel = if (isInCart) "Ir al carrito" else "Agregar al carrito",
+                actionLabel = if (uiState.isInCart) "Ir al carrito" else "Agregar al carrito",
                 onActionClick = {
-                    if (isInCart) {
+                    if (uiState.isInCart) {
                         navController.navigate(AppScreens.CART)
                     } else {
-                        onAddToCart(product, quantity)
-                        isInCart = true
+                        onAddToCart(product, uiState.quantity)
+                        viewModel.setInCart(true)
                     }
                 }
             )
@@ -93,7 +92,6 @@ fun ProductDetailScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
-            // Imagen grande del producto
             AsyncImage(
                 model = product.imageUrl,
                 contentDescription = product.name,
@@ -109,7 +107,6 @@ fun ProductDetailScreen(
                     .padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Nombre y categoría
                 Text(
                     text = product.name,
                     style = MaterialTheme.typography.headlineSmall,
@@ -123,7 +120,6 @@ fun ProductDetailScreen(
                     color = MaterialTheme.colorScheme.primary
                 )
 
-                // Precio
                 Text(
                     text = "S/ %.2f".format(product.price),
                     style = MaterialTheme.typography.headlineMedium,
@@ -132,12 +128,10 @@ fun ProductDetailScreen(
                 )
 
                 HorizontalDivider(
-                    Modifier,
-                    DividerDefaults.Thickness,
+                    thickness = DividerDefaults.Thickness,
                     color = MaterialTheme.colorScheme.outlineVariant
                 )
 
-                // Descripción
                 Text(
                     text = "Descripción",
                     style = MaterialTheme.typography.titleMedium,
@@ -152,12 +146,10 @@ fun ProductDetailScreen(
                 )
 
                 HorizontalDivider(
-                    Modifier,
-                    DividerDefaults.Thickness,
+                    thickness = DividerDefaults.Thickness,
                     color = MaterialTheme.colorScheme.outlineVariant
                 )
 
-                // Selector de cantidad
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -169,23 +161,22 @@ fun ProductDetailScreen(
                         fontWeight = FontWeight.SemiBold
                     )
                     QuantitySelector(
-                        quantity = quantity,
-                        onIncrease = { quantity++ },
-                        onDecrease = { if (quantity > 1) quantity-- }
+                        quantity = uiState.quantity,
+                        onIncrease = { viewModel.onQuantityChange(uiState.quantity + 1) },
+                        onDecrease = { viewModel.onQuantityChange(uiState.quantity - 1) }
                     )
                 }
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Botón agregar al carrito (secundario, complementa al AppBottomCard)
                 AddToCartButton(
                     onAddToCart = {
-                        if (!isInCart) {
-                            onAddToCart(product, quantity)
-                            isInCart = true
+                        if (!uiState.isInCart) {
+                            onAddToCart(product, uiState.quantity)
+                            viewModel.setInCart(true)
                         }
                     },
-                    isInCart = isInCart
+                    isInCart = uiState.isInCart
                 )
             }
         }
