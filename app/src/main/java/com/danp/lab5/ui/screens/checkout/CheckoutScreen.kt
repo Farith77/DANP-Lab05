@@ -1,4 +1,4 @@
-package com.danp.lab5.ui.screens
+package com.danp.lab5.ui.screens.checkout
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,10 +15,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -26,10 +24,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -43,26 +39,27 @@ import androidx.compose.material3.DividerDefaults
 @Composable
 fun CheckoutScreen(
     navController: NavController,
-    cartItems: MutableList<CartItem>,
+    viewModel: CheckoutViewModel,
+    cartItems: List<CartItem>,
     onConfirmOrder: () -> Unit
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+    
     val total = cartItems.sumOf { it.product.price * it.quantity }
     val deliveryCost = if (total > 500.0) 0.0 else 15.0
     val grandTotal = total + deliveryCost
-
-    var orderConfirmed by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
             AppTopBar(
                 title = "Confirmar pedido",
-                showBackButton = !orderConfirmed,
+                showBackButton = !uiState.orderConfirmed,
                 onBackClick = { navController.popBackStack() }
             )
         }
     ) { paddingValues ->
 
-        if (orderConfirmed) {
+        if (uiState.orderConfirmed) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -179,8 +176,7 @@ fun CheckoutScreen(
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -214,13 +210,13 @@ fun CheckoutScreen(
 
                 Button(
                     onClick = {
-                        onConfirmOrder()
-                        orderConfirmed = true
+                        viewModel.confirmOrder(onConfirmOrder)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp),
-                    shape = RoundedCornerShape(14.dp)
+                    shape = RoundedCornerShape(14.dp),
+                    enabled = !uiState.isLoading && cartItems.isNotEmpty()
                 ) {
                     Text(
                         text = "Confirmar pedido",
@@ -234,7 +230,8 @@ fun CheckoutScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp),
-                    shape = RoundedCornerShape(14.dp)
+                    shape = RoundedCornerShape(14.dp),
+                    enabled = !uiState.isLoading
                 ) {
                     Text(
                         text = "Volver al carrito",
