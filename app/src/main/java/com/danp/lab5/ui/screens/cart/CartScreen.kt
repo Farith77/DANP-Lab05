@@ -1,4 +1,4 @@
-package com.danp.lab5.ui.screens
+package com.danp.lab5.ui.screens.cart
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.danp.lab5.data.model.CartItem
 import com.danp.lab5.ui.navigation.AppScreens
 import com.danp.lab5.ui.components.cards.AppBottomCard
 import com.danp.lab5.ui.components.cards.CartItemCard
@@ -30,11 +29,9 @@ import com.danp.lab5.ui.components.bars.AppTopBar
 @Composable
 fun CartScreen(
     navController: NavController,
-    cartItems: MutableList<CartItem>,
-    onQuantityIncrease: (CartItem) -> Unit,
-    onQuantityDecrease: (CartItem) -> Unit,
-    onRemoveItem: (CartItem) -> Unit
+    viewModel: CartViewModel
 ) {
+    val cartItems = viewModel.cartItems
     val total = cartItems.sumOf { it.product.price * it.quantity }
 
     Scaffold(
@@ -100,9 +97,9 @@ fun CartScreen(
                 ) { cartItem ->
                     CartItemCard(
                         cartItem = cartItem,
-                        onQuantityIncrease = { onQuantityIncrease(it) },
-                        onQuantityDecrease = { onQuantityDecrease(it) },
-                        onRemoveItem = { onRemoveItem(it) }
+                        onQuantityIncrease = { viewModel.increaseQuantity(it) },
+                        onQuantityDecrease = { viewModel.decreaseQuantity(it) },
+                        onRemoveItem = { viewModel.removeItem(it) }
                     )
                 }
 
