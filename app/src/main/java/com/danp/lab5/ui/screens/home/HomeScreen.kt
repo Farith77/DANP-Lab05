@@ -1,4 +1,4 @@
-package com.danp.lab5.ui.screens
+package com.danp.lab5.ui.screens.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,16 +10,13 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.danp.lab5.data.model.CartItem
 import com.danp.lab5.data.model.Product
-import com.danp.lab5.data.repository.ProductRepository
 import com.danp.lab5.ui.components.bars.SearchBar
 import com.danp.lab5.ui.navigation.AppScreens
 import com.danp.lab5.ui.components.bars.AppTopBar
@@ -28,20 +25,12 @@ import com.danp.lab5.ui.components.cards.*
 @Composable
 fun HomeScreen(
     navController: NavController,
-    cartItems: MutableList<CartItem>,
+    viewModel: HomeViewModel,
+    cartItems: List<CartItem>,
     onAddToCart: (Product) -> Unit
 ) {
-    var searchQuery by remember { mutableStateOf("") }
-
-    val filteredProducts = remember(searchQuery) {
-        val allProducts = ProductRepository.getProducts()
-        if (searchQuery.isBlank()) allProducts
-        else allProducts.filter {
-            it.name.contains(searchQuery, ignoreCase = true) ||
-                    it.category.contains(searchQuery, ignoreCase = true)
-        }
-    }
-
+    val uiState by viewModel.uiState.collectAsState()
+    val filteredProducts = viewModel.getFilteredProducts()
     val total = cartItems.sumOf { it.product.price * it.quantity }
 
     Scaffold(
@@ -71,9 +60,9 @@ fun HomeScreen(
                 .padding(paddingValues)
         ) {
             SearchBar(
-                query = searchQuery,
-                onQueryChange = { searchQuery = it },
-                onClearQuery = { searchQuery = "" }
+                query = uiState.searchQuery,
+                onQueryChange = { viewModel.onSearchQueryChange(it) },
+                onClearQuery = { viewModel.onSearchQueryChange("") }
             )
 
             LazyVerticalGrid(
