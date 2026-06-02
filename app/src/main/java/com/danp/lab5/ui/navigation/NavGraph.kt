@@ -8,51 +8,39 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.danp.lab5.EcommerceApp
 import com.danp.lab5.data.model.CartItem
 import com.danp.lab5.data.model.Product
-import com.danp.lab5.ui.screens.*
+import com.danp.lab5.ui.screens.cart.CartScreen
+import com.danp.lab5.ui.screens.cart.CartViewModel
+import com.danp.lab5.ui.screens.checkout.CheckoutScreen
+import com.danp.lab5.ui.screens.checkout.CheckoutViewModel
+import com.danp.lab5.ui.screens.home.HomeScreen
+import com.danp.lab5.ui.screens.home.HomeViewModel
+import com.danp.lab5.ui.screens.login.LoginScreen
+import com.danp.lab5.ui.screens.login.LoginViewModel
+import com.danp.lab5.ui.screens.product_detail.ProductDetailScreen
+import com.danp.lab5.ui.screens.product_detail.ProductDetailViewModel
+import com.danp.lab5.ui.screens.profile.ProfileScreen
+import com.danp.lab5.ui.screens.profile.ProfileViewModel
+import com.danp.lab5.ui.screens.register.RegisterScreen
+import com.danp.lab5.ui.screens.register.RegisterViewModel
+import com.danp.lab5.ui.viewmodel.ViewModelFactory
 
 @Composable
 fun NavGraph(startDestination: String = AppScreens.LOGIN) {
 
+    val context = LocalContext.current
+    val app = context.applicationContext as EcommerceApp
+    val factory = remember { ViewModelFactory(app.productRepository, app.userRepository) }
+
     val navController = rememberNavController()
 
-    // ── Estado global del carrito (Mantenido aquí para simplicidad del laboratorio) ──
-    val cartItems = remember { mutableStateListOf<CartItem>() }
-
-    // ── Lógica del carrito ──
-    fun addToCart(product: Product, quantity: Int = 1) {
-        val index = cartItems.indexOfFirst { it.product.id == product.id }
-        if (index != -1) {
-            cartItems[index] = cartItems[index].copy(
-                quantity = cartItems[index].quantity + quantity
-            )
-        } else {
-            cartItems.add(CartItem(product = product, quantity = quantity))
-        }
-    }
-
-    fun increaseQuantity(item: CartItem) {
-        val index = cartItems.indexOfFirst { it.product.id == item.product.id }
-        if (index != -1) {
-            cartItems[index] = cartItems[index].copy(quantity = cartItems[index].quantity + 1)
-        }
-    }
-
-    fun decreaseQuantity(item: CartItem) {
-        val index = cartItems.indexOfFirst { it.product.id == item.product.id }
-        if (index != -1) {
-            if (cartItems[index].quantity > 1) {
-                cartItems[index] = cartItems[index].copy(quantity = cartItems[index].quantity - 1)
-            } else {
-                cartItems.removeAt(index)
-            }
-        }
-    }
-
-    fun removeItem(item: CartItem) {
-        cartItems.removeAll { it.product.id == item.product.id }
-    }
+    // Shared CartViewModel
+    val cartViewModel: CartViewModel = viewModel(factory = factory)
+    val cartItems = cartViewModel.cartItems
 
     // ── NavHost ──
     NavHost(
@@ -61,20 +49,30 @@ fun NavGraph(startDestination: String = AppScreens.LOGIN) {
     ) {
         // Login
         composable(route = AppScreens.LOGIN) {
-            LoginScreen(navController = navController)
+            val loginViewModel: LoginViewModel = viewModel(factory = factory)
+            LoginScreen(
+                navController = navController,
+                viewModel = loginViewModel
+            )
         }
 
         // Registro
         composable(route = AppScreens.REGISTER) {
-            RegisterScreen(navController = navController)
+            val registerViewModel: RegisterViewModel = viewModel(factory = factory)
+            RegisterScreen(
+                navController = navController,
+                viewModel = registerViewModel
+            )
         }
 
         // Home
         composable(route = AppScreens.HOME) {
+            val homeViewModel: HomeViewModel = viewModel(factory = factory)
             HomeScreen(
                 navController = navController,
+                viewModel = homeViewModel,
                 cartItems = cartItems,
-                onAddToCart = { product -> addToCart(product) }
+                onAddToCart = { product -> cartViewModel.addToCart(product) }
             )
         }
 
@@ -86,11 +84,13 @@ fun NavGraph(startDestination: String = AppScreens.LOGIN) {
             )
         ) { backStackEntry ->
             val productId = backStackEntry.arguments?.getInt("productId") ?: return@composable
+            val detailViewModel: ProductDetailViewModel = viewModel(factory = factory)
             ProductDetailScreen(
                 productId = productId,
                 navController = navController,
+                viewModel = detailViewModel,
                 cartItems = cartItems,
-                onAddToCart = { product, quantity -> addToCart(product, quantity) }
+                onAddToCart = { product, quantity -> cartViewModel.addToCart(product, quantity) }
             )
         }
 
@@ -98,25 +98,28 @@ fun NavGraph(startDestination: String = AppScreens.LOGIN) {
         composable(route = AppScreens.CART) {
             CartScreen(
                 navController = navController,
-                cartItems = cartItems,
-                onQuantityIncrease = { increaseQuantity(it) },
-                onQuantityDecrease = { decreaseQuantity(it) },
-                onRemoveItem = { removeItem(it) }
+                viewModel = cartViewModel
             )
         }
 
         // Checkout
         composable(route = AppScreens.CHECKOUT) {
+            val checkoutViewModel: CheckoutViewModel = viewModel(factory = factory)
             CheckoutScreen(
                 navController = navController,
+                viewModel = checkoutViewModel,
                 cartItems = cartItems,
-                onConfirmOrder = { cartItems.clear() }
+                onConfirmOrder = { cartViewModel.clearCart() }
             )
         }
 
         // Perfil
         composable(route = AppScreens.PROFILE) {
-            ProfileScreen(navController = navController)
+            val profileViewModel: ProfileViewModel = viewModel(factory = factory)
+            ProfileScreen(
+                navController = navController,
+                viewModel = profileViewModel
+            )
         }
     }
 }
