@@ -1,14 +1,16 @@
-package com.danp.lab5.ui.screens
+package com.danp.lab5.ui.screens.profile
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,13 +19,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.danp.lab5.data.repository.UserRepository
 import com.danp.lab5.ui.navigation.AppScreens
 import com.danp.lab5.ui.components.bars.AppTopBar
 
 @Composable
-fun ProfileScreen(navController: NavController) {
-    val user = UserRepository.getCurrentUser()
+fun ProfileScreen(
+    navController: NavController,
+    viewModel: ProfileViewModel
+) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(uiState.isLoggedOut) {
+        if (uiState.isLoggedOut) {
+            navController.navigate(AppScreens.LOGIN) {
+                popUpTo(0)
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -41,6 +53,7 @@ fun ProfileScreen(navController: NavController) {
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            val user = uiState.user
             if (user != null) {
                 AsyncImage(
                     model = user.profileImageUrl.ifEmpty { Icons.Default.Person },
@@ -67,7 +80,6 @@ fun ProfileScreen(navController: NavController) {
 
                 Spacer(modifier = Modifier.height(40.dp))
 
-                // Opciones del perfil (Simuladas)
                 ProfileOptionItem(label = "Mis Pedidos")
                 ProfileOptionItem(label = "Direcciones de Envío")
                 ProfileOptionItem(label = "Métodos de Pago")
@@ -75,12 +87,7 @@ fun ProfileScreen(navController: NavController) {
                 Spacer(modifier = Modifier.weight(1f))
 
                 Button(
-                    onClick = {
-                        UserRepository.logout()
-                        navController.navigate(AppScreens.LOGIN) {
-                            popUpTo(0)
-                        }
-                    },
+                    onClick = { viewModel.logout() },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.errorContainer,
@@ -88,7 +95,7 @@ fun ProfileScreen(navController: NavController) {
                     ),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = null)
+                    Icon(Icons.Default.ExitToApp, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Cerrar Sesión")
                 }
