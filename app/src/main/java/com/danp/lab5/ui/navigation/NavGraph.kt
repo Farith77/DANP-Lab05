@@ -1,18 +1,11 @@
 package com.danp.lab5.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.danp.lab5.EcommerceApp
-import com.danp.lab5.data.model.CartItem
-import com.danp.lab5.data.model.Product
 import com.danp.lab5.ui.screens.cart.CartScreen
 import com.danp.lab5.ui.screens.cart.CartViewModel
 import com.danp.lab5.ui.screens.checkout.CheckoutScreen
@@ -27,19 +20,15 @@ import com.danp.lab5.ui.screens.profile.ProfileScreen
 import com.danp.lab5.ui.screens.profile.ProfileViewModel
 import com.danp.lab5.ui.screens.register.RegisterScreen
 import com.danp.lab5.ui.screens.register.RegisterViewModel
-import com.danp.lab5.ui.viewmodel.ViewModelFactory
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun NavGraph(startDestination: String = AppScreens.LOGIN) {
 
-    val context = LocalContext.current
-    val app = context.applicationContext as EcommerceApp
-    val factory = remember { ViewModelFactory(app.productRepository, app.userRepository) }
-
     val navController = rememberNavController()
 
     // Shared CartViewModel
-    val cartViewModel: CartViewModel = viewModel(factory = factory)
+    val cartViewModel: CartViewModel = koinViewModel()
     val cartItems = cartViewModel.cartItems
 
     // ── NavHost ──
@@ -49,7 +38,7 @@ fun NavGraph(startDestination: String = AppScreens.LOGIN) {
     ) {
         // Login
         composable(route = AppScreens.LOGIN) {
-            val loginViewModel: LoginViewModel = viewModel(factory = factory)
+            val loginViewModel: LoginViewModel = koinViewModel()
             LoginScreen(
                 navController = navController,
                 viewModel = loginViewModel
@@ -58,7 +47,7 @@ fun NavGraph(startDestination: String = AppScreens.LOGIN) {
 
         // Registro
         composable(route = AppScreens.REGISTER) {
-            val registerViewModel: RegisterViewModel = viewModel(factory = factory)
+            val registerViewModel: RegisterViewModel = koinViewModel()
             RegisterScreen(
                 navController = navController,
                 viewModel = registerViewModel
@@ -67,7 +56,7 @@ fun NavGraph(startDestination: String = AppScreens.LOGIN) {
 
         // Home
         composable(route = AppScreens.HOME) {
-            val homeViewModel: HomeViewModel = viewModel(factory = factory)
+            val homeViewModel: HomeViewModel = koinViewModel()
             HomeScreen(
                 navController = navController,
                 viewModel = homeViewModel,
@@ -84,7 +73,7 @@ fun NavGraph(startDestination: String = AppScreens.LOGIN) {
             )
         ) { backStackEntry ->
             val productId = backStackEntry.arguments?.getInt("productId") ?: return@composable
-            val detailViewModel: ProductDetailViewModel = viewModel(factory = factory)
+            val detailViewModel: ProductDetailViewModel = koinViewModel()
             ProductDetailScreen(
                 productId = productId,
                 navController = navController,
@@ -104,7 +93,7 @@ fun NavGraph(startDestination: String = AppScreens.LOGIN) {
 
         // Checkout
         composable(route = AppScreens.CHECKOUT) {
-            val checkoutViewModel: CheckoutViewModel = viewModel(factory = factory)
+            val checkoutViewModel: CheckoutViewModel = koinViewModel()
             CheckoutScreen(
                 navController = navController,
                 viewModel = checkoutViewModel,
@@ -115,7 +104,7 @@ fun NavGraph(startDestination: String = AppScreens.LOGIN) {
 
         // Perfil
         composable(route = AppScreens.PROFILE) {
-            val profileViewModel: ProfileViewModel = viewModel(factory = factory)
+            val profileViewModel: ProfileViewModel = koinViewModel()
             ProfileScreen(
                 navController = navController,
                 viewModel = profileViewModel
