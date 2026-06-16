@@ -1,13 +1,17 @@
 package com.danp.lab5.ui.screens.profile
 
 import androidx.lifecycle.ViewModel
+import com.danp.lab5.SessionManager
 import com.danp.lab5.data.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class ProfileViewModel(private val userRepository: UserRepository) : ViewModel() {
+class ProfileViewModel(
+    private val userRepository: UserRepository,
+    private val sessionManager: SessionManager
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
@@ -23,6 +27,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
 
     fun logout() {
         userRepository.logout()
+        sessionManager.logout()
         _uiState.update { it.copy(user = null, isLoggedOut = true) }
     }
 }
