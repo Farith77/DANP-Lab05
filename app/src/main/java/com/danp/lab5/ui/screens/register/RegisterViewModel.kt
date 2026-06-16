@@ -1,13 +1,17 @@
 package com.danp.lab5.ui.screens.register
 
 import androidx.lifecycle.ViewModel
+import com.danp.lab5.SessionManager
 import com.danp.lab5.data.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class RegisterViewModel(private val userRepository: UserRepository) : ViewModel() {
+class RegisterViewModel(
+    private val userRepository: UserRepository,
+    private val sessionManager: SessionManager
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RegisterUiState())
     val uiState: StateFlow<RegisterUiState> = _uiState.asStateFlow()
@@ -39,6 +43,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         val success = userRepository.register(name, email, password)
         
         if (success) {
+            sessionManager.login(email)
             _uiState.update { it.copy(isLoading = false, isRegistered = true) }
         } else {
             _uiState.update { it.copy(isLoading = false, error = "Error al registrar el usuario") }
