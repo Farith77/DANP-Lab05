@@ -1,13 +1,17 @@
 package com.danp.lab5.ui.screens.login
 
 import androidx.lifecycle.ViewModel
+import com.danp.lab5.SessionManager
 import com.danp.lab5.data.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
+class LoginViewModel(
+    private val userRepository: UserRepository,
+    private val sessionManager: SessionManager
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
@@ -34,6 +38,7 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
         val success = userRepository.login(email, password)
         
         if (success) {
+            sessionManager.login(email)
             _uiState.update { it.copy(isLoading = false, isLoggedIn = true) }
         } else {
             _uiState.update { it.copy(isLoading = false, error = "Credenciales incorrectas") }
