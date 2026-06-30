@@ -1,12 +1,14 @@
 package com.danp.lab5.ui.screens.register
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.danp.lab5.SessionManager
 import com.danp.lab5.data.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class RegisterViewModel(
     private val userRepository: UserRepository,
@@ -39,14 +41,24 @@ class RegisterViewModel(
         }
 
         _uiState.update { it.copy(isLoading = true) }
-        
-        val success = userRepository.register(name, email, password)
-        
-        if (success) {
-            sessionManager.login(email)
-            _uiState.update { it.copy(isLoading = false, isRegistered = true) }
-        } else {
-            _uiState.update { it.copy(isLoading = false, error = "Error al registrar el usuario") }
+
+        // Django requiere 'username' explícito; lo derivamos del email igual que antes
+        val username = email.substringBefore("@")
+
+        viewModelScope.launch {
+            userRepository.register(name = name, username = username, email = email, password = password)
+                .onSuccess { user ->
+                    sessionManager.login(user.username)
+                    _uiState.update { it.copy(isLoading = false, isRegistered = true) }
+                }
+                .onFailure { error ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = error.message ?: "Error al registrar el usuario"
+                        )
+                    }
+                }
         }
     }
 }

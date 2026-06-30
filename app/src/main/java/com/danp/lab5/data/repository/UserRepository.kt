@@ -1,45 +1,74 @@
 package com.danp.lab5.data.repository
 
-import com.danp.lab5.data.local.UserDataSource
 import com.danp.lab5.data.model.User
+import com.danp.lab5.data.remote.DjangoApiService
+import com.danp.lab5.data.remote.RetrofitClient
+import com.danp.lab5.data.remote.dto.LoginRequestDto
+import com.danp.lab5.data.remote.dto.RegisterRequestDto
 
-class UserRepository(private val dataSource: UserDataSource) {
+/**
+ * Repositorio de usuarios. Ya no simula el login localmente:
+ * llama a Django, guarda el token en RetrofitClient y cachea
+ * el usuario actual en memoria.
+ */
+class UserRepository(
+    private val apiService: DjangoApiService
+) {
     private var currentUser: User? = null
 
-    fun login(emailOrUsername: String, password: String): Boolean {
-        // Simulación de login: si es "jhamil", cargamos el usuario por defecto del DataSource
-        val defaultUser = dataSource.getDefaultUser()
-        
-        currentUser = if (emailOrUsername == defaultUser.username || emailOrUsername == defaultUser.email) {
-            defaultUser
-        } else {
-            User(
-                id = (100..999).random(),
-                name = "Usuario Invitado",
-                username = emailOrUsername,
-                email = if (emailOrUsername.contains("@")) emailOrUsername else "$emailOrUsername@example.com",
-                password = password,
-                profileImageUrl = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400"
-            )
+    /**
+     * Login real contra POST /api/users/login/.
+     * Devuelve Result.success(User) o Result.failure con el motivo del error.
+     */
+    suspend fun login(username: String, password: String): Result<User> {
+        return try {
+            val response = apiService.login(LoginRequestDto(username, password))
+            if (response.isSuccessful && response.body() != null) {
+                val authResponse = response.body()!!
+                RetrofitClient.authToken = authResponse.token
+                val user = authResponse.user.toDomain()
+                currentUser = user
+                Result.success(user)
+            } else {
+                Result.failure(Exception("Usuario o contraseña incorrectos"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
-        return true
     }
 
-    fun register(name: String, email: String, password: String): Boolean {
-        currentUser = User(
-            id = (100..999).random(),
-            name = name,
-            username = email.split("@")[0],
-            email = email,
-            password = password,
-            profileImageUrl = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400"
-        )
-        return true
+    /**
+     * Registro real contra POST /api/users/register/.
+     * Crea el usuario en Django y deja la sesión iniciada automáticamente.
+     */
+    suspend fun register(name: String, username: String, email: String, password: String): Result<User> {
+        return try {
+            val response = apiService.register(
+                RegisterRequestDto(
+                    name = name,
+                    username = username,
+                    email = email,
+                    password = password
+                )
+            )
+            if (response.isSuccessful && response.body() != null) {
+                val authResponse = response.body()!!
+                RetrofitClient.authToken = authResponse.token
+                val user = authResponse.user.toDomain()
+                currentUser = user
+                Result.success(user)
+            } else {
+                Result.failure(Exception("No se pudo completar el registro"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     fun getCurrentUser(): User? = currentUser
 
     fun logout() {
         currentUser = null
+        RetrofitClient.authToken = null
     }
 }

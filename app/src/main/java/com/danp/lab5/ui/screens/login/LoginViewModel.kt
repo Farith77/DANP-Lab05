@@ -1,12 +1,14 @@
 package com.danp.lab5.ui.screens.login
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.danp.lab5.SessionManager
 import com.danp.lab5.data.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class LoginViewModel(
     private val userRepository: UserRepository,
@@ -25,23 +27,31 @@ class LoginViewModel(
     }
 
     fun login() {
-        val email = _uiState.value.email
+        val username = _uiState.value.email
         val password = _uiState.value.password
 
-        if (email.isBlank() || password.isBlank()) {
+        if (username.isBlank() || password.isBlank()) {
             _uiState.update { it.copy(error = "Por favor, completa todos los campos") }
             return
         }
 
         _uiState.update { it.copy(isLoading = true) }
-        
-        val success = userRepository.login(email, password)
-        
-        if (success) {
-            sessionManager.login(email)
-            _uiState.update { it.copy(isLoading = false, isLoggedIn = true) }
-        } else {
-            _uiState.update { it.copy(isLoading = false, error = "Credenciales incorrectas") }
+
+        // userRepository.login() es suspend -> debe llamarse dentro de una corrutina
+        viewModelScope.launch {
+            userRepository.login(username, password)
+                .onSuccess { user ->
+                    sessionManager.login(user.username)
+                    _uiState.update { it.copy(isLoading = false, isLoggedIn = true) }
+                }
+                .onFailure { error ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = error.message ?: "Credenciales incorrectas"
+                        )
+                    }
+                }
         }
     }
 }

@@ -2,8 +2,8 @@ package com.danp.lab5.di
 
 import com.danp.lab5.ProductLogger
 import com.danp.lab5.SessionManager
-import com.danp.lab5.data.local.ProductDataSource
-import com.danp.lab5.data.local.UserDataSource
+import com.danp.lab5.data.remote.DjangoApiService
+import com.danp.lab5.data.remote.RetrofitClient
 import com.danp.lab5.data.repository.ProductRepository
 import com.danp.lab5.data.repository.UserRepository
 import com.danp.lab5.ui.screens.cart.CartViewModel
@@ -22,11 +22,12 @@ val appModule = module {
     singleOf(::ProductLogger)
     single { SessionManager(get()) }
 
-    // Data Sources (Assuming they are objects, but we can wrap them if needed)
-    // In this case, Repositories take them as parameters. 
-    // If they are objects, we pass the object directly.
-    single { ProductRepository(ProductDataSource) }
-    single { UserRepository(UserDataSource) }
+    // Retrofit: una sola instancia de DjangoApiService para toda la app
+    single<DjangoApiService> { RetrofitClient.apiService }
+
+    // Repositories (ya no dependen de los DataSource locales)
+    single { ProductRepository(get()) }
+    single { UserRepository(get()) }
 
     // ViewModels
     single { CartViewModel(get()) }
