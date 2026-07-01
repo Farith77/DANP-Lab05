@@ -32,6 +32,9 @@ import com.danp.lab5.ui.components.bars.AppTopBar
 import com.danp.lab5.ui.components.buttons.*
 import com.danp.lab5.ui.components.cards.AppBottomCard
 import androidx.compose.material3.DividerDefaults
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 
 @Composable
 fun ProductDetailScreen(
@@ -48,15 +51,17 @@ fun ProductDetailScreen(
         viewModel.loadProduct(productId, isInCart)
     }
 
-    val product = uiState.product
-
-    if (product == null) {
-        if (!uiState.isLoading) {
-            // Podríamos mostrar un error o volver atrás
-            navController.popBackStack()
+    if (uiState.isLoading || uiState.product == null) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
         }
         return
     }
+
+    val product = uiState.product ?: return
 
     val subtotal = product.price * uiState.quantity
 

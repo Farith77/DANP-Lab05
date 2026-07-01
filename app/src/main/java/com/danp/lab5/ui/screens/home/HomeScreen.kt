@@ -30,7 +30,17 @@ fun HomeScreen(
     onAddToCart: (Product) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val filteredProducts = viewModel.getFilteredProducts()
+
+    // ✅ Ahora se recalcula cada vez que uiState cambia
+    val filteredProducts = if (uiState.searchQuery.isBlank()) {
+        uiState.products
+    } else {
+        uiState.products.filter {
+            it.name.contains(uiState.searchQuery, ignoreCase = true) ||
+                    it.category.contains(uiState.searchQuery, ignoreCase = true)
+        }
+    }
+
     val total = cartItems.sumOf { it.product.price * it.quantity }
 
     Scaffold(

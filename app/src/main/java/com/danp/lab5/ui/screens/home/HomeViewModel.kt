@@ -36,15 +36,4 @@ class HomeViewModel(private val productRepository: ProductRepository) : ViewMode
     fun onSearchQueryChange(query: String) {
         _uiState.update { it.copy(searchQuery = query) }
     }
-
-    fun getFilteredProducts() = uiState.value.let { state ->
-        if (state.searchQuery.isBlank()) {
-            state.products
-        } else {
-            state.products.filter {
-                it.name.contains(state.searchQuery, ignoreCase = true) ||
-                        it.category.contains(state.searchQuery, ignoreCase = true)
-            }
-        }
-    }
 }

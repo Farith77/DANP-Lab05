@@ -10,7 +10,7 @@ import com.danp.lab5.data.model.Product
 data class ProductDto(
     @SerializedName("id") val id: Int,
     @SerializedName("name") val name: String,
-    @SerializedName("price") val price: Double,
+    @SerializedName("price") val price: String,
     @SerializedName("description") val description: String,
     @SerializedName("imageUrl") val imageUrl: String = "",
     @SerializedName("category") val category: String = ""
@@ -19,7 +19,7 @@ data class ProductDto(
     fun toDomain(): Product = Product(
         id = id,
         name = name,
-        price = price,
+        price = price.toDoubleOrNull() ?: 0.0,
         description = description,
         imageUrl = imageUrl,
         category = category
