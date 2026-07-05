@@ -3,6 +3,7 @@ package com.danp.lab5.ui.screens.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.danp.lab5.SessionManager
+import com.danp.lab5.data.local.UserDataSource
 import com.danp.lab5.data.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +13,8 @@ import kotlinx.coroutines.launch
 
 class LoginViewModel(
     private val userRepository: UserRepository,
-    private val sessionManager: SessionManager
+    private val sessionManager: SessionManager,
+    private val userDataSource: UserDataSource  // ← fuente local para invitado
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -37,7 +39,6 @@ class LoginViewModel(
 
         _uiState.update { it.copy(isLoading = true) }
 
-        // userRepository.login() es suspend -> debe llamarse dentro de una corrutina
         viewModelScope.launch {
             userRepository.login(username, password)
                 .onSuccess { user ->
@@ -53,5 +54,15 @@ class LoginViewModel(
                     }
                 }
         }
+    }
+
+    /**
+     * Ingresa sin conexión usando el perfil local de UserDataSource.
+     * No llama a la API ni guarda token — solo carga el usuario por defecto.
+     */
+    fun loginAsGuest() {
+        val guestUser = userDataSource.getDefaultUser()
+        sessionManager.login(guestUser.username)
+        _uiState.update { it.copy(isLoggedIn = true) }
     }
 }

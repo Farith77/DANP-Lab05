@@ -3,7 +3,8 @@ package com.danp.lab5.data.local
 import com.danp.lab5.data.model.Product
 
 object ProductDataSource {
-    fun getProducts(): List<Product> = listOf(
+
+    private val products = listOf(
         Product(
             id = 1,
             name = "Laptop Gamer",
@@ -45,4 +46,10 @@ object ProductDataSource {
             imageUrl = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400"
         )
     )
+
+    /** Devuelve todos los productos locales. */
+    fun getAllProducts(): List<Product> = products
+
+    /** Busca un producto por su ID. Devuelve null si no existe. */
+    fun getProductById(id: Int): Product? = products.find { it.id == id }
 }

@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  */
 object RetrofitClient {
 
-    private const val BASE_URL = "http://192.168.1.7:8000/"
+    private const val BASE_URL = "http://192.168.1.13:8000/"
 
     /** Token actual del usuario logueado. Se actualiza desde SessionManager al hacer login. */
     var authToken: String? = null
