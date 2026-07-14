@@ -35,6 +35,8 @@ import com.danp.lab5.data.model.CartItem
 import com.danp.lab5.ui.navigation.AppScreens
 import com.danp.lab5.ui.components.bars.AppTopBar
 import androidx.compose.material3.DividerDefaults
+import androidx.compose.ui.platform.LocalContext
+import com.danp.lab5.NotificationHelper
 
 @Composable
 fun CheckoutScreen(
@@ -48,6 +50,8 @@ fun CheckoutScreen(
     val total = cartItems.sumOf { it.product.price * it.quantity }
     val deliveryCost = if (total > 500.0) 0.0 else 15.0
     val grandTotal = total + deliveryCost
+
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -91,6 +95,7 @@ fun CheckoutScreen(
                 Spacer(modifier = Modifier.height(32.dp))
                 Button(
                     onClick = {
+                        NotificationHelper.sendOrderConfirmation(context)
                         navController.navigate(AppScreens.HOME) {
                             popUpTo(AppScreens.HOME) { inclusive = true }
                         }
